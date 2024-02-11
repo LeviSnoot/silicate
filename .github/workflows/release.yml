@@ -16,30 +16,14 @@ jobs:
     strategy:
       fail-fast: false # don't fail other jobs if one fails
       matrix:
-        build: [x86_64-linux, x86_64-macos, x86_64-windows]
+        build: [x86_64-linux]
         include:
         - build: x86_64-linux
           os: ubuntu-latest
           rust: stable
           target: x86_64-unknown-linux-gnu
           cross: false
-          bundle: silicate
-        - build: x86_64-macos
-          os: macos-latest
-          rust: stable
-          target: x86_64-apple-darwin
-          cross: false
-          bundle: Silicate.dmg
-        - build: x86_64-windows
-          os: windows-latest
-          rust: stable
-          target: x86_64-pc-windows-msvc
-          cross: false
-          bundle: Silicate.exe
-        - build: aarch64-macos
-          os: macos-latest
-          rust: stable
-          target: aarch64-apple-darwin
+          bundle: silicate-linux
 
     steps:
       - name: Checkout sources
@@ -62,22 +46,6 @@ jobs:
 
       - name: Build release binary
         run: cargo build --release --locked --target ${{ matrix.target }}
-
-      - name: Build macOS bundle
-        uses: actions-rs/cargo@v1
-        if: matrix.os == 'macos-latest'
-        with:
-          use-cross: ${{ matrix.cross }}
-          command: bundle
-          args: --release --target ${{ matrix.target }}
-
-      - name: Package macOS DMG
-        shell: bash
-        if: matrix.os == 'macos-latest'
-        run: >-
-            hdiutil create "target/${{ matrix.target }}/release/bundle/osx/${{ matrix.bundle }}"
-            -volname "${{ env.BUNDLE_NAME }}"
-            -srcfolder "target/${{ matrix.target }}/release/bundle/osx/${{ env.BUNDLE_NAME }}.app" -ov
 
       - name: Build archive
         shell: bash
