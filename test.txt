@@ -47,4 +47,4 @@ warning: `silicate` (bin "silicate") generated 1 warning
     max_compute_workgroups_per_dimension: 65535,
     max_buffer_size: 18446744073709551615,
 }
-[src\compositor\dev.rs:55] chunks = 32
+[src\compositor\dev.rs:55] chunks = 32 
